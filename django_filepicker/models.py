@@ -3,7 +3,6 @@ from django.utils.translation import ugettext_lazy
 
 import forms
 
-
 class FPFileField(models.FileField):
     description = ugettext_lazy("A File selected using Filepicker.io")
 
@@ -37,3 +36,16 @@ class FPFileField(models.FileField):
 
         defaults.update(kwargs)
         return super(FPFileField, self).formfield(**defaults)
+
+
+try:
+    from south.modelsinspector import add_introspection_rules
+    add_introspection_rules(
+        [([FPFileField], [], {
+            "apikey": ["apikey", {"default": None}],
+            "mimetypes": ["mimetypes", {"default": None}],
+            "services": ["services", {"default": None}],
+        })],
+        ["^django_filepicker\.models\.FPFileField"])
+except ImportError:
+    pass
