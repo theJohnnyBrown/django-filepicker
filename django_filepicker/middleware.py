@@ -15,6 +15,9 @@ class URLFileMapperMiddleware(object):
 
     Note that the original filepicker.io url will still be available in POST if you need it.
     """
+    def __init__(self):
+        self.uploadfiles = []
+
     def process_request(self, request):
         #Iterate over GET or POST data, search for filepicker.io urls
         if request.META["CONTENT_TYPE"] == "application/json":
@@ -24,6 +27,7 @@ class URLFileMapperMiddleware(object):
         for key, val in items:
             try:
                 fp = FilepickerFile(val)
+                self.uploadfiles.append(fp)
             except ValueError:
                 pass
             except TypeError:
@@ -38,3 +42,10 @@ class URLFileMapperMiddleware(object):
                         request.FILES[key] = fp.get_file()
                         request.POST = request.POST.copy()
                         request.POST[key] = request.FILES[key]
+
+    def process_response(self, request, response):
+        while self.uploadfiles:
+            ff = self.uploadfiles.pop()
+            del ff
+
+        return response
