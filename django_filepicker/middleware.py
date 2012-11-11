@@ -23,7 +23,6 @@ class URLFileMapperMiddleware(object):
             items = request.POST.items()
         for key, val in items:
             try:
-                # import ipdb; ipdb.set_trace()
                 fp = FilepickerFile(val)
             except ValueError:
                 pass
@@ -39,4 +38,3 @@ class URLFileMapperMiddleware(object):
                         request.FILES[key] = fp.get_file()
                         request.POST = request.POST.copy()
                         request.POST[key] = fp.get_file()
-                        import ipdb; ipdb.set_trace()
