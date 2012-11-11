@@ -37,4 +37,4 @@ class URLFileMapperMiddleware(object):
                     else:
                         request.FILES[key] = fp.get_file()
                         request.POST = request.POST.copy()
-                        request.POST[key] = fp.get_file()
+                        request.POST[key] = request.FILES[key]
