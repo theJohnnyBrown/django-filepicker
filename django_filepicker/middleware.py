@@ -37,5 +37,6 @@ class URLFileMapperMiddleware(object):
                             request.FILES.getlist(key) + [fp.get_file()]))
                     else:
                         request.FILES[key] = fp.get_file()
+                        request.POST = request.POST.copy()
                         request.POST[key] = fp.get_file()
                         import ipdb; ipdb.set_trace()
