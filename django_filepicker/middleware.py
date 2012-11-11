@@ -1,3 +1,5 @@
+import json
+
 from .utils import FilepickerFile
 
 
@@ -15,10 +17,17 @@ class URLFileMapperMiddleware(object):
     """
     def process_request(self, request):
         #Iterate over GET or POST data, search for filepicker.io urls
-        for key, val in request.POST.items():
+        if request.META["CONTENT_TYPE"] == "application/json":
+            items = json.loads(request.raw_post_data).items()
+        else:
+            items = request.POST.items()
+        for key, val in items:
             try:
+                # import ipdb; ipdb.set_trace()
                 fp = FilepickerFile(val)
             except ValueError:
+                pass
+            except TypeError:
                 pass
             else:
                 splits = val.split(",")
@@ -28,3 +37,5 @@ class URLFileMapperMiddleware(object):
                             request.FILES.getlist(key) + [fp.get_file()]))
                     else:
                         request.FILES[key] = fp.get_file()
+                        request.POST[key] = fp.get_file()
+                        import ipdb; ipdb.set_trace()
