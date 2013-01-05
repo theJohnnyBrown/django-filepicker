@@ -20,7 +20,7 @@ class URLFileMapperMiddleware(object):
 
     def process_request(self, request):
         #Iterate over GET or POST data, search for filepicker.io urls
-        if request.META["CONTENT_TYPE"] == "application/json":
+        if request.META.get("CONTENT_TYPE") == "application/json":
             items = json.loads(request.raw_post_data).items()
         else:
             items = request.POST.items()
